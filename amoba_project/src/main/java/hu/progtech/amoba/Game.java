@@ -30,7 +30,7 @@ public class Game {
 
         while (true) {
             if (humanTurn) {
-                System.out.print("A te lépésed (e.g. b3), or 'save filename' / 'load filename' / 'quit': ");
+                System.out.print("A te lépésed (pl f5), or 'save filename' / 'load filename' / 'quit': ");
                 String line = scanner.nextLine().trim();
                 if (line.isEmpty()) continue;
                 if (line.startsWith("save ")) {
@@ -43,16 +43,16 @@ public class Game {
                     board.printBoard();
                     continue;
                 } else if (line.equalsIgnoreCase("quit")) {
-                    System.out.println("Goodbye!"); break;
+                    System.out.println("Szia!"); break;
                 } else {
                     int[] rc = parseMove(line);
-                    if (rc == null) { System.out.println("Invalid format."); continue; }
-                    if (!board.isInside(rc[0], rc[1]) || !board.isEmpty(rc[0], rc[1])) { System.out.println("Cell invalid or not empty."); continue; }
+                    if (rc == null) { System.out.println("Nem megfelelő formátum."); continue; }
+                    if (!board.isInside(rc[0], rc[1]) || !board.isEmpty(rc[0], rc[1])) { System.out.println("Nem megfelelő mező vagy a mező már foglalt."); continue; }
                     if (!isAdjacentToAny(rc[0], rc[1])) { System.out.println("Egy kitöltött mező mellé kell raknod."); continue; }
                     board.place(rc[0], rc[1], 'X');
                     board.printBoard();
                     if (board.checkWin('X')) {
-                        System.out.println("You (X) Nyertél! Gratulálok.");
+                        System.out.println("Nyertél! Gratulálok.");
                         persistWin(name);
                         break;
                     }
@@ -68,7 +68,7 @@ public class Game {
                 System.out.println("AI ide rakta " + (char)('a'+choice[1]) + (choice[0]+1));
                 board.printBoard();
                 if (board.checkWin('O')) {
-                    System.out.println("AI (O) Nyert."); persistWin("AI"); break;
+                    System.out.println("AI Nyert."); persistWin("AI"); break;
                 }
                 humanTurn = true;
             }
@@ -79,7 +79,7 @@ public class Game {
         try {
             repo.printHighScores();
         } catch (SQLException e) {
-            System.err.println("Failed to print high scores: " + e.getMessage());
+            System.err.println("Nem sikerült betölteni a pontszámokat: " + e.getMessage());
         }
     }
 
@@ -87,7 +87,7 @@ public class Game {
         try {
             repo.recordWin(winner);
         } catch (SQLException e) {
-            System.err.println("Failed to persist high score: " + e.getMessage());
+            System.err.println("Nem sikerült menteni a pontszámot " + e.getMessage());
         }
     }
 
@@ -123,16 +123,16 @@ public class Game {
                 }
                 pw.println();
             }
-            System.out.println("Saved to " + filename);
+            System.out.println("Lementve ide " + filename);
         } catch (IOException e) {
-            System.err.println("Failed to save: " + e.getMessage());
+            System.err.println("Nem sikerült menteni: " + e.getMessage());
         }
     }
 
     private void loadBoard(String filename) {
         try (BufferedReader br = new BufferedReader(new FileReader(filename))) {
             String first = br.readLine();
-            if (first == null) { System.out.println("Empty file."); return; }
+            if (first == null) { System.out.println("Üres fájl."); return; }
             String[] parts = first.split("\s+"); int r = Integer.parseInt(parts[0]); int c = Integer.parseInt(parts[1]);
             for (int i = 0; i < r; i++) {
                 String line = br.readLine();
@@ -144,9 +144,9 @@ public class Game {
                     }
                 }
             }
-            System.out.println("Load from file (note: loading board content not fully implemented in this demo).");
+            System.out.println("Betölteni fájlból.");
         } catch (IOException e) {
-            System.err.println("Failed to load: " + e.getMessage());
+            System.err.println("Nem sikerült betölteni: " + e.getMessage());
         }
     }
 }
